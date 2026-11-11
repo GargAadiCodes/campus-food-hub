@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Food Hub | Cafeteria Menus & Sample Orders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-light: rgba(99, 102, 241, 0.15);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 16px 24px;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-area h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo-area p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 900px) {
+      .grid-layout { grid-template-columns: 1.4fr 0.6fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Filters Bar */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 220px;
+      background: #182232;
+      border: 1px solid var(--card-border);
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .chip {
+      background: #182232;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .chip.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* Menu Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 600px) {
+      .menu-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    }
+
+    .menu-item {
+      background: #182232;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .item-cat {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .item-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 4px 0;
+    }
+    .item-cafeteria {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .item-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .item-price {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--success);
+    }
+
+    .btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--accent-hover); }
+
+    .fav-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* Order / Favorites Sidebar */
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: #182232;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 1px solid var(--card-border);
+    }
+    .order-total-box {
+      background: #182232;
+      border: 1px solid var(--card-border);
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="logo-area">
+        <h1>Campus Food Hub</h1>
+        <p>Fuel your day. Browse cafeteria menus, save meals, and build sample orders.</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid-layout">
+      <!-- Main Menu Section -->
+      <div class="card">
+        <div class="card-title">Cafeteria Menu</div>
+        <div class="controls-bar">
+          <input type="text" id="searchInput" class="search-box" placeholder="Search meals, snacks, drinks..." oninput="renderMenu()">
+          <div class="chips">
+            <button class="chip active" onclick="filterCategory('All', this)">All</button>
+            <button class="chip" onclick="filterCategory('Main Hall', this)">Main Hall</button>
+            <button class="chip" onclick="filterCategory('North Diner', this)">North Diner</button>
+            <button class="chip" onclick="filterCategory('Tech Cafe', this)">Tech Cafe</button>
+          </div>
+        </div>
+        <div class="menu-grid" id="menuGrid"></div>
+      </div>
+
+      <!-- Sidebar: Favorites & Sample Order -->
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <!-- Sample Order Builder -->
+        <div class="card">
+          <div class="card-title">Sample Order Builder</div>
+          <div id="orderList">
+            <p style="color:var(--text-muted); font-size:0.85rem;">No items in sample order yet. Click "+ Order" on any menu item.</p>
+          </div>
+          <div class="order-total-box">
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:6px;">
+              <span style="color:var(--text-muted);">Total Items:</span>
+              <b id="orderCount">0</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:1.1rem;">
+              <span>Total Price:</span>
+              <b style="color:var(--success);" id="orderTotal">$0.00</b>
+            </div>
+            <button class="btn" style="width:100%; margin-top:12px;" onclick="clearOrder()">Clear Sample Order</button>
+          </div>
+        </div>
+
+        <!-- Saved Favorite Meals -->
+        <div class="card">
+          <div class="card-title">Favorite Meals</div>
+          <div id="favList">
+            <p style="color:var(--text-muted); font-size:0.85rem;">No favorites saved. Click the star icon on items to save them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Campus Food Hub &copy; 2026. Interactive menu demo with LocalStorage.</p>
+  </footer>
+
+  <script>
+    const menuItems = [
+      { id: 1, name: "Grilled Chicken Bowl", cafeteria: "Main Hall", category: "Meals", price: 8.50 },
+      { id: 2, name: "Veggie Deluxe Wrap", cafeteria: "North Diner", category: "Meals", price: 6.75 },
+      { id: 3, name: "Iced Caramel Macchiato", cafeteria: "Tech Cafe", category: "Drinks", price: 4.25 },
+      { id: 4, name: "Crispy Avocado Tacos", cafeteria: "Main Hall", category: "Meals", price: 7.50 },
+      { id: 5, name: "Fresh Fruit Smoothie", cafeteria: "North Diner", category: "Drinks", price: 5.00 },
+      { id: 6, name: "Artisanal Bagel & Cream Cheese", cafeteria: "Tech Cafe", category: "Snacks", price: 3.50 }
+    ];
+
+    let activeCategory = 'All';
+    let favorites = JSON.parse(localStorage.getItem('campus_food_favs')) || [];
+    let sampleOrder = JSON.parse(localStorage.getItem('campus_food_order')) || [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderMenu();
+      renderOrder();
+      renderFavorites();
+    });
+
+    function filterCategory(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderMenu();
+    }
+
+    function renderMenu() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const grid = document.getElementById('menuGrid');
+      grid.innerHTML = '';
+
+      const filtered = menuItems.filter(item => {
+        const matchesCat = activeCategory === 'All' || item.cafeteria === activeCategory;
+        const matchesSearch = item.name.toLowerCase().includes(search) || item.cafeteria.toLowerCase().includes(search);
+        return matchesCat && matchesSearch;
+      });
+
+      filtered.forEach(item => {
+        const isFav = favorites.includes(item.id);
+        const card = document.createElement('div');
+        card.className = 'menu-item';
+        card.innerHTML = `
+          <button class="fav-btn" onclick="toggleFav(${item.id})">${isFav ? '⭐' : '☆'}</button>
+          <div>
+            <div class="item-cat">${item.category}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-cafeteria">📍 ${item.cafeteria}</div>
+          </div>
+          <div class="item-bottom">
+            <span class="item-price">$${item.price.toFixed(2)}</span>
+            <button class="btn" onclick="addToOrder(${item.id})">+ Order</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function toggleFav(id) {
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(fId => fId !== id);
+      } else {
+        favorites.push(id);
+      }
+      localStorage.setItem('campus_food_favs', JSON.stringify(favorites));
+      renderMenu();
+      renderFavorites();
+    }
+
+    function addToOrder(id) {
+      const item = menuItems.find(m => m.id === id);
+      const existing = sampleOrder.find(o => o.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        sampleOrder.push({ ...item, qty: 1 });
+      }
+      saveOrder();
+    }
+
+    function removeOrderQty(id) {
+      const existing = sampleOrder.find(o => o.id === id);
+      if (existing) {
+        existing.qty -= 1;
+        if (existing.qty <= 0) {
+          sampleOrder = sampleOrder.filter(o => o.id !== id);
+        }
+      }
+      saveOrder();
+    }
+
+    function clearOrder() {
+      sampleOrder = [];
+      saveOrder();
+    }
+
+    function saveOrder() {
+      localStorage.setItem('campus_food_order', JSON.stringify(sampleOrder));
+      renderOrder();
+    }
+
+    function renderOrder() {
+      const list = document.getElementById('orderList');
+      if (sampleOrder.length === 0) {
+        list.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No items in sample order yet. Click "+ Order" on any menu item.</p>`;
+        document.getElementById('orderCount').innerText = '0';
+        document.getElementById('orderTotal').innerText = '$0.00';
+        return;
+      }
+
+      let count = 0;
+      let total = 0;
+
+      list.innerHTML = sampleOrder.map(item => {
+        count += item.qty;
+        total += item.price * item.qty;
+        return `
+          <div class="order-item">
+            <div>
+              <div style="font-weight:700; font-size:0.9rem;">${item.name}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">$${item.price.toFixed(2)} x ${item.qty}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button style="background:#1f2937; color:white; border:none; padding:2px 8px; border-radius:4px; cursor:pointer;" onclick="removeOrderQty(${item.id})">-</button>
+              <span style="font-weight:700; font-size:0.85rem;">${item.qty}</span>
+              <button style="background:#1f2937; color:white; border:none; padding:2px 8px; border-radius:4px; cursor:pointer;" onclick="addToOrder(${item.id})">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('orderCount').innerText = count;
+      document.getElementById('orderTotal').innerText = `$${total.toFixed(2)}`;
+    }
+
+    function renderFavorites() {
+      const list = document.getElementById('favList');
+      const favItems = menuItems.filter(m => favorites.includes(m.id));
+
+      if (favItems.length === 0) {
+        list.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No favorites saved. Click the star icon on items to save them.</p>`;
+        return;
+      }
+
+      list.innerHTML = favItems.map(item => `
+        <div class="order-item">
+          <div>
+            <div style="font-weight:700; font-size:0.9rem;">${item.name}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">📍 ${item.cafeteria} • $${item.price.toFixed(2)}</div>
+          </div>
+          <button class="btn" style="padding:4px 10px; font-size:0.75rem;" onclick="addToOrder(${item.id})">+ Order</button>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
